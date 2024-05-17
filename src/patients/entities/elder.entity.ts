@@ -7,7 +7,7 @@ export class ElderEntity{
     @PrimaryGeneratedColumn()
     id_elder: number;
 
-    @ManyToOne(()=> ResponsibleEntity, (responsible)=> responsible.)
+    @ManyToOne(()=> ResponsibleEntity, (responsible)=> responsible.elder_id)
     responsible_id: ResponsibleEntity;
 
     @Column({type: "varchar", nullable: false})
