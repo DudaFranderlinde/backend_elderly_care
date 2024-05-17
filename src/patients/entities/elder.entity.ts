@@ -1,10 +1,14 @@
 import { AddressEntity } from "src/utils/entities/address.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ResponsibleEntity } from "./responsible.entity";
 
 @Entity('elder')
 export class ElderEntity{
     @PrimaryGeneratedColumn()
     id_elder: number;
+
+    @ManyToOne(()=> ResponsibleEntity, (responsible)=> responsible.)
+    responsible_id: ResponsibleEntity;
 
     @Column({type: "varchar", nullable: false})
     name: string;

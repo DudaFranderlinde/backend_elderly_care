@@ -1,6 +1,7 @@
 import { AddressEntity } from "src/utils/entities/address.entity";
 import { Kinship } from "src/utils/enum/kinship-responsible.enum";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ElderEntity } from "./elder.entity";
 
 @Entity({name: 'responsible'})
 export class ResponsibleEntity {
@@ -30,4 +31,7 @@ export class ResponsibleEntity {
 
     @OneToOne(() => AddressEntity, (address) => address.responsible_id)
     address: AddressEntity;
+
+    @OneToMany(()=> ElderEntity, (elder)=> elder.responsible_id)
+    elder_id: ElderEntity;
 }
