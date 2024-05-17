@@ -1,3 +1,4 @@
+import { ElderEntity } from "src/patients/entities/elder.entity";
 import { ResponsibleEntity } from "src/patients/entities/responsible.entity";
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -29,4 +30,7 @@ export class AddressEntity {
     
     @OneToOne(()=> ResponsibleEntity, (responsible)=> responsible.address)
     responsible_id: ResponsibleEntity;
+
+    @OneToOne(()=> ElderEntity, (elder)=> elder.address)
+    elder_id: ElderEntity;
 }
