@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ElderEntity } from "src/patients/entities/elder.entity";
+import { ResponsibleEntity } from "src/patients/entities/responsible.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name: 'address'})
 export class AddressEntity {
@@ -9,20 +11,26 @@ export class AddressEntity {
     cep: string;
 
     @Column({type: "varchar",  nullable: false})
-    logradouro: string;
+    street: string;
 
     @Column({type: "varchar",  nullable: false})
-    numero: string;
+    number: string;
 
     @Column({type: "varchar",  nullable: false})
-    bairro: string;
+    district: string;
 
     @Column({type: "varchar",  nullable: false})
-    cidade: string;
+    city: string;
 
     @Column({type: "varchar",  nullable: false})
-    estado: string;
+    state: string;
 
     @Column({type: "varchar", default: null})
-    complemento: string;    
+    complement: string;  
+    
+    @OneToOne(()=> ResponsibleEntity, (responsible)=> responsible.address)
+    responsible_id: ResponsibleEntity;
+
+    @OneToOne(()=> ElderEntity, (elder)=> elder.address)
+    elder_id: ElderEntity;
 }
