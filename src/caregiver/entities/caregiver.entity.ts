@@ -26,5 +26,8 @@ export class CaregiverEntity {
     experience: string;
 
     @Column({type: "varchar", nullable: false})
+    description_experience: string;
+
+    @Column({type: "varchar", nullable: false})
     training_time: string;
 }
