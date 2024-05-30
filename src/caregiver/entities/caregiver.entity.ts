@@ -19,7 +19,7 @@ export class CaregiverEntity {
     @Column({type: "varchar", nullable: false})
     date_birth: string;
 
-    @OneToOne(() => AddressEntity, (address) => address.elder_id)
+    @OneToOne(() => AddressEntity, (address) => address.caregiver_id)
     address: AddressEntity;
 
     @Column({type: "varchar", nullable: false})
