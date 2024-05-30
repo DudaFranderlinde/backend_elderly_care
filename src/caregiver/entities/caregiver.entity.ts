@@ -17,6 +17,9 @@ export class CaregiverEntity {
     cpf: string;
 
     @Column({type: "varchar", nullable: false})
+    email: string;
+
+    @Column({type: "varchar", nullable: false})
     date_birth: string;
 
     @OneToOne(() => AddressEntity, (address) => address.caregiver_id)
@@ -30,4 +33,10 @@ export class CaregiverEntity {
 
     @Column({type: "varchar", nullable: false})
     training_time: string;
+
+    @Column({type: "varchar", nullable: false})
+    password: string;
+
+    @Column({type: "varchar", nullable: false})
+    salt: string;
 }
