@@ -1,6 +1,7 @@
 import { AddressEntity } from "src/utils/entities/address.entity";
 import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ResponsibleEntity } from "./responsible.entity";
+import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";
 
 @Entity('elder')
 export class ElderEntity{
@@ -9,6 +10,9 @@ export class ElderEntity{
 
     @ManyToOne(()=> ResponsibleEntity, (responsible)=> responsible.elder_id)
     responsible_id: ResponsibleEntity;
+
+    @ManyToOne(()=> CaregiverEntity, (caregiver)=> caregiver.elder_id)
+    caregiver_id: CaregiverEntity;
 
     @Column({type: "varchar", nullable: false})
     name: string;

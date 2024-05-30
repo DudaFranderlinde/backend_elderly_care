@@ -7,6 +7,9 @@ export class CaregiverEntity {
     @PrimaryGeneratedColumn()
     id_caregiver: number;
 
+    @OneToMany(()=> ElderEntity, (elder)=> elder.caregiver_id)
+    elder_id: ElderEntity;
+
     @Column({type: "varchar", nullable: false})
     name: string;
 
