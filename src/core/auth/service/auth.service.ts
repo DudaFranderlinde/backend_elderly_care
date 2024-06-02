@@ -8,11 +8,7 @@ export class AuthService {
     constructor(
         private jwtService: JwtService,
     ){}
-
-    private async hashPassword(senha: string, salt: string): Promise<string> {
-        return bcrypt.hash(senha, salt);
-    }
-
+    
     validateToken(jwtToken: string) {
         return new Promise(async (resolve, reject) => {
             try {

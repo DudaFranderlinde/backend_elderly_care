@@ -1,3 +1,4 @@
+import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";
 import { ElderEntity } from "src/patients/entities/elder.entity";
 import { ResponsibleEntity } from "src/patients/entities/responsible.entity";
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -25,7 +26,7 @@ export class AddressEntity {
     @Column({type: "varchar",  nullable: false})
     state: string;
 
-    @Column({type: "varchar", default: null})
+    @Column({type: "varchar"})
     complement: string;  
     
     @OneToOne(()=> ResponsibleEntity, (responsible)=> responsible.address)
@@ -33,4 +34,7 @@ export class AddressEntity {
 
     @OneToOne(()=> ElderEntity, (elder)=> elder.address)
     elder_id: ElderEntity;
+
+    @OneToOne(()=> CaregiverEntity, (caregiver)=> caregiver.address)
+    caregiver_id: CaregiverEntity;
 }
