@@ -4,6 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './core/auth/guard/jwt-strategy';
 import { CaregiverEntity } from './caregiver/entities/caregiver.entity';
 import { PatientsModule } from './patients/patients.module';
+import { CaregiverModule } from './caregiver/caregiver.module';
+import { databaseProviders } from './core/database/database.providers';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { PatientsModule } from './patients/patients.module';
         expiresIn: '6h',
       },
     }),
-    CaregiverEntity,
+    CaregiverModule,
     PatientsModule,
   ],
   controllers: [],
