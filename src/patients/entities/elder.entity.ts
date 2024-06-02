@@ -1,5 +1,5 @@
 import { AddressEntity } from "src/utils/entities/address.entity";
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ResponsibleEntity } from "./responsible.entity";
 import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";
 
@@ -9,9 +9,11 @@ export class ElderEntity{
     id_elder: number;
 
     @ManyToOne(()=> ResponsibleEntity, (responsible)=> responsible.elder_id)
+    @JoinColumn({name: 'responsible_id'})
     responsible_id: ResponsibleEntity;
 
     @ManyToOne(()=> CaregiverEntity, (caregiver)=> caregiver.elder_id)
+    @JoinColumn({name: 'caregiver_id'})
     caregiver_id: CaregiverEntity;
 
     @Column({type: "varchar", nullable: false})
@@ -24,6 +26,7 @@ export class ElderEntity{
     date_birth: string;
 
     @OneToOne(() => AddressEntity, (address) => address.elder_id)
+    @JoinColumn({name: 'address_id'})
     address: AddressEntity;
 
     @Column({type: "varchar", nullable: false})
