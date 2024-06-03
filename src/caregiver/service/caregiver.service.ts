@@ -39,7 +39,7 @@ export class CaregiverService {
                 const checkSingUp = await this.checkCPF(cpf);
 
                 if (checkSingUp !== null) {
-                    reject(null)
+                    resolve(null)
                 }
 
                 const address = this.addressRepository.create()
@@ -65,9 +65,6 @@ export class CaregiverService {
                 caregiver.training_time = training_time;
                 caregiver.address = addressCreated;
 
-                console.log(caregiver);
-                
-
                 const caregiverCreated = await this.caregiverRepository.save(caregiver);
 
                 const find = await this.caregiverRepository.find({
@@ -75,8 +72,6 @@ export class CaregiverService {
                         id_caregiver: caregiverCreated.id_caregiver
                     }
                 })
-                
-                console.log(find);
                 
                 delete caregiver.password;
                 delete caregiver.salt;

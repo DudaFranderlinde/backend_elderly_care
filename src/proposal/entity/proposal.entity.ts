@@ -11,7 +11,7 @@ export class ProposalEntity {
     @Column({type: "decimal", nullable: false})
     valor_hora: number;
 
-    @Column({type: "enum", nullable: false, default: Status.ENVIADO})
+    @Column({type: "enum", enum: Status, nullable: false, default: Status.ENVIADO})
     status: Status;
 
     @OneToOne(()=> CaregiverEntity, (caregiver)=> caregiver.address)
