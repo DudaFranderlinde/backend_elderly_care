@@ -82,4 +82,31 @@ export class CaregiverService {
             }
         })
     }
+
+    getProfile(id: number){
+        return new Promise(async (resolve, reject)=> {
+            try {
+                const foundCaregiver = await this.caregiverRepository.findOne({
+                    where: {
+                        id_caregiver: id,
+                    },
+                    relations:{
+                        address: true
+                    }
+                })
+                
+                delete foundCaregiver.id_caregiver
+                delete foundCaregiver.password
+                delete foundCaregiver.salt
+
+                if (foundCaregiver.address.complement == null) {
+                    delete foundCaregiver.address.complement
+                }
+
+               return resolve(foundCaregiver)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
