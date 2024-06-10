@@ -4,6 +4,7 @@ import { CreateElderDto } from "../dto/createElder.dto";
 import { CreateResponsibleDto } from "../dto/createResponsible.dto";
 import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 import { ElderEntity } from "../entities/elder.entity";
+import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
 
 @Controller('patients')
 export class PatientsController {
@@ -41,5 +42,10 @@ export class PatientsController {
         return {
             message: 'Cadastro realizado.',
           }
+    }
+
+    @Post('/signin')
+    async signIn(@Body() credentialsDto: CredentialResponsibleDto) {
+      return await this.service.signIn(credentialsDto);
     }
 }

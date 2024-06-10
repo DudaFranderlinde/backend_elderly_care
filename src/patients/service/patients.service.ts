@@ -7,6 +7,8 @@ import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 import { CreateResponsibleDto } from "../dto/createResponsible.dto";
 import { CreateElderDto } from "../dto/createElder.dto";
 import * as bcrypt from 'bcrypt';
+import { JwtService } from "@nestjs/jwt";
+import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
 
 
 @Injectable()
@@ -17,7 +19,8 @@ export class PatientService {
         @Inject('ELDER_REPOSITORY')
         private elderRepository: Repository<ElderEntity>,
         @Inject('ADDRESS_REPOSITORY')
-        private addressRepository: Repository<AddressEntity>
+        private addressRepository: Repository<AddressEntity>,
+        private jwtService: JwtService
     ){}
 
     checkCPF(cpf: string){
@@ -127,5 +130,45 @@ export class PatientService {
         })
     }
 
+    async checkPassword(pass: string, salt: string, originalPass: string): Promise<boolean> {
+        const hash = await bcrypt.hash(pass, salt)
+        return hash === originalPass? true: false;
+    }
 
+    async checkCredentials(credentials: CredentialResponsibleDto) {
+        const { email, pass } = credentials;
+        const user = await this.responsibleRepository.findOne({
+            where: {
+                email:email,
+            }
+        })
+
+        if (user == null) {
+            return(null)
+        }
+ 
+        const checkPass =  await this.checkPassword(pass, user.salt, user.pass)
+
+        if (user && checkPass == true) {   
+            return user;
+        }
+        return null;
+    }
+
+    async signIn(credentials: CredentialResponsibleDto) {
+        const user = await this.checkCredentials(credentials);
+        if (user === null) {
+            return ('E-mail e/ou senha incorretos')
+        }
+
+
+        const jwtPayload = {
+            id: user.id_responsible,
+            nome: user.name,
+            email: user.email
+        }
+
+        const token = this.jwtService.sign(jwtPayload, { secret: `${process.env.JWT_SECRET}` });
+        return { token }
+    }
 }
