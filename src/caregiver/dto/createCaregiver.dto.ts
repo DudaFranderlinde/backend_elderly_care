@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsEmail, IsNotEmpty, IsString, Matches, ValidateNested } from "class-validator";
+import { IsDateString, IsEmail, IsNotEmpty, IsString, Matches, MinLength, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 
 export class CreateCaregiverDTO {
@@ -21,6 +21,7 @@ export class CreateCaregiverDTO {
 
     @IsString()
     @IsNotEmpty({message: "Campo de Senha não pode estar vazio."})
+    @MinLength(8)
     readonly password: string;
 
     @IsString()
