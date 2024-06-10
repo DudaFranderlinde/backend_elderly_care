@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './core/auth/guard/jwt-strategy';
-import { CaregiverEntity } from './caregiver/entities/caregiver.entity';
 import { PatientsModule } from './patients/patients.module';
 import { CaregiverModule } from './caregiver/caregiver.module';
 import { databaseProviders } from './core/database/database.providers';
@@ -14,7 +13,7 @@ import { databaseProviders } from './core/database/database.providers';
       isGlobal: true,
     }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      global: true,
       signOptions: {
         expiresIn: '6h',
       },
@@ -23,6 +22,6 @@ import { databaseProviders } from './core/database/database.providers';
     PatientsModule,
   ],
   controllers: [],
-  providers: [JwtStrategy],
+  providers: [...databaseProviders, JwtStrategy],
 })
 export class AppModule {}
