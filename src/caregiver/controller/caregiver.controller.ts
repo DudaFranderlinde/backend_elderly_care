@@ -4,6 +4,7 @@ import { CreateCaregiverDTO } from "../dto/createCaregiver.dto";
 import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 import { CaregiverEntity } from "../entities/caregiver.entity";
 import { Response } from 'express';
+import { CredentialCaregiverDto } from "../dto/credentialsCaregiver.dto";
 
 @Controller('caregiver')
 export class CaregiverController {
@@ -22,6 +23,11 @@ export class CaregiverController {
           return {
             message: 'Cadastro realizado.'
           }
+    }
+
+    @Post('/signin')
+    async signIn(@Body() credentialsDto: CredentialCaregiverDto) {
+      return await this.service.signIn(credentialsDto);
     }
 
     @Get('/profile')
