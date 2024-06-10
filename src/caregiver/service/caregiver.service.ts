@@ -125,6 +125,10 @@ export class CaregiverService {
                 email:email,
             }
         })
+
+        if (user == null) {
+            return(null)
+        }
  
         const checkPass =  await this.checkPassword(password, user.salt, user.password)
 
