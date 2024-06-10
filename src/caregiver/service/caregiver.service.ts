@@ -5,6 +5,8 @@ import { Repository } from "typeorm";
 import { CreateCaregiverDTO } from "../dto/createCaregiver.dto";
 import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 import * as bcrypt from 'bcrypt';
+import { CredentialCaregiverDto } from "../dto/credentialsCaregiver.dto";
+import { JwtService } from "@nestjs/jwt";
 
 
 @Injectable()
@@ -13,7 +15,8 @@ export class CaregiverService {
         @Inject('CAREGIVER_REPOSITORY')
         private caregiverRepository: Repository<CaregiverEntity>,
         @Inject('ADDRESS_REPOSITORY')
-        private addressRepository: Repository<AddressEntity>
+        private addressRepository: Repository<AddressEntity>,
+        private jwtService: JwtService
     ) {}
 
     checkCPF(cpf: string){
@@ -108,5 +111,43 @@ export class CaregiverService {
                 reject(error)
             }
         })
+    }
+
+    async checkPassword(pass: string, salt: string, originalPass: string): Promise<boolean> {
+        const hash = await bcrypt.hash(pass, salt)
+        return hash === originalPass? true: false;
+    }
+
+    async checkCredentials(credentials: CredentialCaregiverDto) {
+        const { email, password } = credentials;
+        const user = await this.caregiverRepository.findOne({
+            where: {
+                email:email,
+            }
+        })
+ 
+        const checkPass =  await this.checkPassword(password, user.salt, user.password)
+
+        if (user && checkPass == true) {   
+            return user;
+        }
+        return null;
+    }
+
+    async signIn(credentials: CredentialCaregiverDto) {
+        const user = await this.checkCredentials(credentials);
+        if (user === null) {
+            return ('E-mail e/ou senha incorretos')
+        }
+
+
+        const jwtPayload = {
+            id: user.id_caregiver,
+            nome: user.name,
+            email: user.email
+        }
+
+        const token = this.jwtService.sign(jwtPayload, { secret: `${process.env.JWT_SECRET}` });
+        return { token }
     }
 }
