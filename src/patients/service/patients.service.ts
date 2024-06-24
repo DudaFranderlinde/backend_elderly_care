@@ -171,4 +171,34 @@ export class PatientService {
         const token = this.jwtService.sign(jwtPayload, { secret: `${process.env.JWT_SECRET}` });
         return { token }
     }
+
+    getProfile(id: number){
+        return new Promise(async (resolve, reject)=> {
+            try {
+                const foundResponsible = await this.responsibleRepository.findOne({
+                    where: {
+                        id_responsible: id,
+                    },
+                    relations:{
+                        address: true,
+                        elder_id: {
+                            address: true
+                        },
+                    }
+                })
+                
+                delete foundResponsible.id_responsible
+                delete foundResponsible.pass
+                delete foundResponsible.salt
+
+                if (foundResponsible.address.complement == null) {
+                    delete foundResponsible.address.complement
+                }
+
+               return resolve(foundResponsible)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
