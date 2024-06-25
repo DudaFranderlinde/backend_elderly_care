@@ -1,10 +1,11 @@
-import { Body, Controller, HttpException, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Request, Res, UseGuards } from "@nestjs/common";
+import { Response } from 'express';
 import { PatientService } from "../service/patients.service";
 import { CreateElderDto } from "../dto/createElder.dto";
 import { CreateResponsibleDto } from "../dto/createResponsible.dto";
 import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
-import { ElderEntity } from "../entities/elder.entity";
 import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
+import { JwtAuthGuard } from "src/core/auth/guard/jwt-auth.guard";
 
 @Controller('patients')
 export class PatientsController {
@@ -48,4 +49,22 @@ export class PatientsController {
     async signIn(@Body() credentialsDto: CredentialResponsibleDto) {
       return await this.service.signIn(credentialsDto);
     }
+
+
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    async me(@Request() req, @Res() response: Response) {
+        try {            
+          const user = await this.service.getProfile(+req.user.id)
+         
+          if (user) {
+            response.status(HttpStatus.OK).send(user)
+            return user
+          }
+  
+          response.status(HttpStatus.BAD_REQUEST).send(`message:{Nenhum usuário encontrado com o ID ${+req.user.id}}`)
+        } catch (error) {
+          throw new HttpException({ reason: error?.detail }, HttpStatus.BAD_REQUEST)
+        }      
+      } 
 }
