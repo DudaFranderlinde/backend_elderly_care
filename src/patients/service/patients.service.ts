@@ -9,6 +9,7 @@ import { CreateElderDto } from "../dto/createElder.dto";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
+import { UpdateElderDto } from "../dto/updateElder.dto";
 
 
 @Injectable()
@@ -200,5 +201,45 @@ export class PatientService {
                 reject(error)
             }
         })
+    }
+    
+    async updateElder(updateProfileDto: UpdateElderDto, id_elder: number){
+        return new Promise(async (resolve, reject) => {
+          try {
+            let { address } = updateProfileDto;
+            
+            const findElder = await this.elderRepository.findOne({
+                where:{
+                    id_elder: id_elder
+                }
+            });
+
+            const findAddress = await this.addressRepository.findOne({
+                where: {
+                    elder_id: findElder
+                }
+            })
+
+            const {id_address} = findAddress
+
+            if(!findElder){
+              return reject({message: `ID de Paciente ${id_elder} não foi encontrada`})
+            }
+
+            if (address !== undefined) {
+                await this.addressRepository.update(id_address, address);
+                delete updateProfileDto.address
+            }
+
+            await this.elderRepository.update(id_elder, updateProfileDto);
+
+            resolve({ message: 'Informações atualizadas' });
+    
+          } catch (error) {
+            console.log(error);
+            
+            reject({ message: 'Nenhum campo válido recebido para atualizar informações', code: 400 });
+          }
+        });
     }
 }
