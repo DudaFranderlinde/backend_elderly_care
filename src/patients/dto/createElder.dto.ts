@@ -1,7 +1,6 @@
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsString, Matches, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
-import { AddressEntity } from "src/utils/entities/address.entity";
 
 export class CreateElderDto {
     @IsString()
