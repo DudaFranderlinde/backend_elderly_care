@@ -7,6 +7,7 @@ import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
 import { JwtAuthGuard } from "src/core/auth/guard/jwt-auth.guard";
 import { UpdateElderDto } from "../dto/updateElder.dto";
+import { UpdateResponsibleDto } from "../dto/updateResponsible.dto";
 
 @Controller('patients')
 export class PatientsController {
@@ -76,6 +77,25 @@ export class PatientsController {
         console.log(14);
         
         const updated = await this.service.updateElder(updateCompanyDto, id);
+  
+        response.status(HttpStatus.OK).send(updated);
+      } catch (error) {
+        if (typeof error === 'object') {
+          throw new HttpException(
+            { statusCode: HttpStatus.NOT_FOUND, message: error.message },
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        throw new HttpException({ error }, HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    @Put('update/responsible')
+    async updateResponsible(@Body() updateCompanyDto: UpdateResponsibleDto, @Body('id_responsible') id, @Res() response: Response,){
+      try {
+        console.log(14);
+        
+        const updated = await this.service.update(updateCompanyDto, id);
   
         response.status(HttpStatus.OK).send(updated);
       } catch (error) {
