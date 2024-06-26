@@ -9,6 +9,8 @@ import { CreateElderDto } from "../dto/createElder.dto";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
+import { UpdateElderDto } from "../dto/updateElder.dto";
+import { UpdateResponsibleDto } from "../dto/updateResponsible.dto";
 
 
 @Injectable()
@@ -200,5 +202,90 @@ export class PatientService {
                 reject(error)
             }
         })
+    }
+    
+    async updateElder(updateProfileDto: UpdateElderDto, id_elder: number){
+        return new Promise(async (resolve, reject) => {
+          try {
+            let { address } = updateProfileDto;
+            
+            const findElder = await this.elderRepository.findOne({
+                where:{
+                    id_elder: id_elder
+                }
+            });
+
+            const findAddress = await this.addressRepository.findOne({
+                where: {
+                    elder_id: findElder
+                }
+            })
+
+            const {id_address} = findAddress
+
+            if(!findElder){
+              return reject({message: `ID de Paciente ${id_elder} não foi encontrada`})
+            }
+
+            if (address !== undefined) {
+                await this.addressRepository.update(id_address, address);
+                delete updateProfileDto.address
+            }
+
+            await this.elderRepository.update(id_elder, updateProfileDto);
+
+            resolve({ message: 'Informações atualizadas' });
+    
+          } catch (error) {
+            reject({ message: 'Nenhum campo válido recebido para atualizar informações', code: 400 });
+          }
+        });
+    }
+
+    async update(updateProfileDto: UpdateResponsibleDto, id_responsible: number){
+        return new Promise(async (resolve, reject) => {
+          try {
+            let { address } = updateProfileDto;
+
+            console.log("care");
+            
+            const findCaregiver = await this.responsibleRepository.findOne({
+                where:{
+                    id_responsible: id_responsible
+                }
+            });
+
+            console.log("address");
+
+            const findAddress = await this.addressRepository.findOne({
+                where: {
+                    responsible_id: findCaregiver
+                }
+            });
+
+            const {id_address} = findAddress
+
+            if(!findCaregiver){
+              return reject({message: `ID de Responsável ${id_responsible} não foi encontrada`})
+            }
+
+            console.log("entrou");
+
+            if (address !== undefined) {
+                await this.addressRepository.update(id_address, address);
+                delete updateProfileDto.address
+            }
+
+            if (updateProfileDto.pass !== undefined) {
+                updateProfileDto.pass = await this.hashPassword(updateProfileDto.pass, findCaregiver.salt)
+            }
+
+            await this.responsibleRepository.update(id_responsible, updateProfileDto);
+            resolve({ message: 'Informações atualizadas' });
+    
+          } catch (error) {
+            reject({ message: 'Nenhum campo válido recebido para atualizar informações', code: 400 });
+          }
+        });
     }
 }
