@@ -236,8 +236,6 @@ export class PatientService {
             resolve({ message: 'Informações atualizadas' });
     
           } catch (error) {
-            console.log(error);
-            
             reject({ message: 'Nenhum campo válido recebido para atualizar informações', code: 400 });
           }
         });

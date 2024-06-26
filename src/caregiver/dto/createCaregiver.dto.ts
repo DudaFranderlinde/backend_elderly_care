@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsEmail, IsNotEmpty, IsString, Matches, MinLength, ValidateNested } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 
 export class CreateCaregiverDTO {

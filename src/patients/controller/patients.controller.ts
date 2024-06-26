@@ -79,12 +79,12 @@ export class PatientsController {
   
         response.status(HttpStatus.OK).send(updated);
       } catch (error) {
-        // if (typeof error === 'object') {
-        //   throw new HttpException(
-        //     { statusCode: HttpStatus.NOT_FOUND, message: error.message },
-        //     HttpStatus.NOT_FOUND,
-        //   );
-        // }
+        if (typeof error === 'object') {
+          throw new HttpException(
+            { statusCode: HttpStatus.NOT_FOUND, message: error.message },
+            HttpStatus.NOT_FOUND,
+          );
+        }
         throw new HttpException({ error }, HttpStatus.BAD_REQUEST);
       }
     }
