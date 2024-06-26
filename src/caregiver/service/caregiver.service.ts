@@ -7,6 +7,7 @@ import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 import * as bcrypt from 'bcrypt';
 import { CredentialCaregiverDto } from "../dto/credentialsCaregiver.dto";
 import { JwtService } from "@nestjs/jwt";
+import { UpdateCaregiverDTO } from "../dto/updateCaregiver.dto";
 
 
 @Injectable()
@@ -154,4 +155,47 @@ export class CaregiverService {
         const token = this.jwtService.sign(jwtPayload, { secret: `${process.env.JWT_SECRET}` });
         return { token }
     }
+
+    async updateCaregiver(updateProfileDto: UpdateCaregiverDTO, id_caregiver: number){
+        return new Promise(async (resolve, reject) => {
+          try {
+            let { address } = updateProfileDto;
+            
+            const findCaregiver = await this.caregiverRepository.findOne({
+                where:{
+                    id_caregiver: id_caregiver
+                }
+            });
+
+            const findAddress = await this.addressRepository.findOne({
+                where: {
+                    caregiver_id: findCaregiver
+                }
+            })
+
+            const {id_address} = findAddress
+
+            if(!findCaregiver){
+              return reject({message: `ID de Paciente ${id_caregiver} não foi encontrada`})
+            }
+
+            if (address !== undefined) {
+                await this.addressRepository.update(id_address, address);
+                delete updateProfileDto.address
+            }
+
+            if (updateProfileDto.password !== undefined) {
+                updateProfileDto.password = await this.hashPassword(updateProfileDto.password, findCaregiver.salt)
+            }
+
+            await this.caregiverRepository.update(id_caregiver, updateProfileDto);
+
+            resolve({ message: 'Informações atualizadas' });
+    
+          } catch (error) {
+            reject({ message: 'Nenhum campo válido recebido para atualizar informações', code: 400 });
+          }
+        });
+    }
+    
 }
