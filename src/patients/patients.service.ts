@@ -1,16 +1,16 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
-import { ResponsibleEntity } from "../entities/responsible.entity";
-import { AddressEntity } from "src/utils/entities/address.entity";
-import { ElderEntity } from "../entities/elder.entity";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
-import { CreateResponsibleDto } from "../dto/createResponsible.dto";
-import { CreateElderDto } from "../dto/createElder.dto";
+import { ResponsibleEntity } from "./entities/responsible.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
+import { ElderEntity } from "./entities/elder.entity";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
+import { CreateResponsibleDto } from "./dto/createResponsible.dto";
+import { CreateElderDto } from "./dto/createElder.dto";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
-import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
-import { UpdateElderDto } from "../dto/updateElder.dto";
-import { UpdateResponsibleDto } from "../dto/updateResponsible.dto";
+import { CredentialResponsibleDto } from "./dto/credentialResponsible.dto";
+import { UpdateElderDto } from "./dto/updateElder.dto";
+import { UpdateResponsibleDto } from "./dto/updateResponsible.dto";
 
 
 @Injectable()
@@ -45,19 +45,58 @@ export class PatientService {
         return checkCFP;
     }
 
+    async checkEmail(email: string) {
+        const user = await this.responsibleRepository.findOne({
+            where: {
+                email:email,
+            }
+        })
+
+        return user
+    }
+
+    async checkAge(date: string) {
+        const format = date.split('/')
+        const day = parseInt(format[0])
+        const month = parseInt(format[1])
+        const year = parseInt(format[2])
+        const date_birth = new Date(year, month, day)
+        const today = new Date()
+        let age = today.getFullYear().valueOf() - date_birth.getFullYear().valueOf();
+        const monthDiff = today.getMonth() - date_birth.getMonth();
+        const dayDiff = today.getDate() - date_birth.getDate();
+    
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+            age = age - 1 ;
+        }
+
+        if (age >= 18) {
+            return true
+        }
+
+        return false
+    }
+
     private async hashPassword(senha: string, salt: string): Promise<string> {
         return bcrypt.hash(senha, salt);
     }
 
     async createResponsible(createAddress: CreateAddressDto, createResponsible: CreateResponsibleDto) {
-        return new Promise<ResponsibleEntity>(async (resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const {cep, street, number, district, city, state, complement} = createAddress;
-            const {name, cpf, email, kinship, pass, phone} = createResponsible;            
+            const {name, cpf, email, kinship, pass, phone, date_birth, photo} = createResponsible;            
     
             const checkSingUp = await this.checkCPF(cpf);
+            const checkEmail = await this.checkEmail(email);
     
             if (checkSingUp !== null) {
-                return resolve(null);
+                return resolve("cpf");
+            }
+
+            console.log(checkEmail);
+            
+            if (checkEmail !== null) {
+                return resolve("email");
             }
 
             const address = this.addressRepository.create();
@@ -70,9 +109,15 @@ export class PatientService {
             address.complement = complement;
             const addressCreated = await this.addressRepository.save(address);
 
+            if (await this.checkAge(date_birth) === false) {
+                return resolve('idade')
+            }
+
             const responsible = this.responsibleRepository.create();
             responsible.name = name;
             responsible.cpf = cpf;
+            responsible.date_birth = date_birth;
+            responsible.photo = photo;
             responsible.email = email;
             responsible.kinship = kinship;
             responsible.salt =  await bcrypt.genSalt();
@@ -80,16 +125,16 @@ export class PatientService {
             responsible.phone = phone;
             responsible.address = addressCreated;   
             
-            const responsibleCreated = this.responsibleRepository.save(responsible);
+            const responsibleCreated = await this.responsibleRepository.save(responsible);
 
-            return resolve(responsibleCreated);    
+            return resolve(responsibleCreated.id_responsible);    
         })
     }
 
     createElder(createAddress: CreateAddressDto, createElder: CreateElderDto, responsible: number) {
         return new Promise(async (resolve, reject) => {
             const {cep, street, number, district, city, state, complement} = createAddress;
-            const {name, cpf, date_birth, historic, ministration} = createElder;
+            const {name, cpf, date_birth, historic, ministration, photo} = createElder;
 
             const findResponsible = await this.responsibleRepository.findOne({
                 where: {
@@ -121,6 +166,7 @@ export class PatientService {
             const elder = this.elderRepository.create();
             elder.name = name;
             elder.cpf = cpf;
+            elder.photo = photo;
             elder.date_birth = date_birth;
             elder.historic = historic;
             elder.ministration = ministration;
@@ -254,6 +300,10 @@ export class PatientService {
                     id_responsible: id_responsible
                 }
             });
+            
+            if(!findCaregiver){
+                return reject({message: `ID de Responsável ${id_responsible} não foi encontrada`})
+              }
 
             console.log("address");
 
@@ -265,12 +315,6 @@ export class PatientService {
 
             const {id_address} = findAddress
 
-            if(!findCaregiver){
-              return reject({message: `ID de Responsável ${id_responsible} não foi encontrada`})
-            }
-
-            console.log("entrou");
-
             if (address !== undefined) {
                 await this.addressRepository.update(id_address, address);
                 delete updateProfileDto.address
@@ -278,6 +322,13 @@ export class PatientService {
 
             if (updateProfileDto.pass !== undefined) {
                 updateProfileDto.pass = await this.hashPassword(updateProfileDto.pass, findCaregiver.salt)
+            }
+
+            if (updateProfileDto.email  !== undefined) {
+                const checkEmail = await this.checkEmail(updateProfileDto.email)
+                if (checkEmail !== null && checkEmail.id_responsible !== id_responsible) {
+                    return resolve('email')
+                }
             }
 
             await this.responsibleRepository.update(id_responsible, updateProfileDto);

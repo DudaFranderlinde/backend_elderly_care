@@ -26,7 +26,7 @@ export class AddressEntity {
     @Column({type: "varchar",  nullable: false})
     state: string;
 
-    @Column({type: "varchar"})
+    @Column({type: "varchar", nullable: true})
     complement: string;  
     
     @OneToOne(()=> ResponsibleEntity, (responsible)=> responsible.address)

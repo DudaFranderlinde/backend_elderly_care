@@ -1,13 +1,13 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Put, Request, Res, UseGuards } from "@nestjs/common";
 import { Response } from 'express';
-import { PatientService } from "../service/patients.service";
-import { CreateElderDto } from "../dto/createElder.dto";
-import { CreateResponsibleDto } from "../dto/createResponsible.dto";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
-import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
+import { PatientService } from "./patients.service";
+import { CreateElderDto } from "./dto/createElder.dto";
+import { CreateResponsibleDto } from "./dto/createResponsible.dto";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
+import { CredentialResponsibleDto } from "./dto/credentialResponsible.dto";
 import { JwtAuthGuard } from "src/core/auth/guard/jwt-auth.guard";
-import { UpdateElderDto } from "../dto/updateElder.dto";
-import { UpdateResponsibleDto } from "../dto/updateResponsible.dto";
+import { UpdateElderDto } from "./dto/updateElder.dto";
+import { UpdateResponsibleDto } from "./dto/updateResponsible.dto";
 
 @Controller('patients')
 export class PatientsController {
@@ -15,22 +15,30 @@ export class PatientsController {
         private service: PatientService
     ){}
 
-    @Post('singup/responsible')
+    @Post('signup/responsible')
     async singUp(@Body() createResponsible: CreateResponsibleDto, @Body('address') createAddress: CreateAddressDto){
         const responsible = await this.service.createResponsible(createAddress, createResponsible);
 
-        if(responsible == null){
-            throw new HttpException(`Informação inválida! CPF já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        if(responsible == "cpf"){
+            throw new HttpException(`Informação inválida! Verifique CPF já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        }
+
+        if(responsible == "email"){
+          throw new HttpException(`Informação inválida! Verifique Email já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        }
+
+        if(responsible == "idade"){
+          throw new HttpException(`Informação inválida! Menor de idade não é permitido ser declarado como resposável.`, HttpStatus.CONFLICT)
         }
         
         return {
             message: 'Cadastro realizado.',
-            id_responsible: responsible.id_responsible
+            id_responsible: responsible
             
           }
     }
 
-    @Post('singup/elder')
+    @Post('signup/elder')
     async singUpElder( @Body() createElder: CreateElderDto, @Body('address') createAddress: CreateAddressDto, @Body('responsible') responsible: number){
         const elder = await this.service.createElder(createAddress, createElder, responsible);
 
@@ -90,13 +98,16 @@ export class PatientsController {
       }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put('update/responsible')
-    async updateResponsible(@Body() updateCompanyDto: UpdateResponsibleDto, @Body('id_responsible') id, @Res() response: Response,){
-      try {
-        console.log(14);
-        
-        const updated = await this.service.update(updateCompanyDto, id);
+    async updateResponsible(@Body() updateCompanyDto: UpdateResponsibleDto, @Res() response: Response, @Request() req){
+      try {    
+        const updated = await this.service.update(updateCompanyDto, req.user.id);
   
+        if(updated == "email"){
+          throw new HttpException(`Informação inválida! Email já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        }
+
         response.status(HttpStatus.OK).send(updated);
       } catch (error) {
         if (typeof error === 'object') {

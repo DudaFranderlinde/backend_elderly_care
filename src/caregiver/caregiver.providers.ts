@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { CaregiverEntity } from './entities/caregiver.entity';
-import { AddressEntity } from 'src/utils/entities/address.entity';
+import { AddressEntity } from 'src/address/entities/address.entity';
 
 export const caregiverProviders = [
     {

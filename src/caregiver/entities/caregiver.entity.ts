@@ -1,6 +1,6 @@
 import { ElderEntity } from "src/patients/entities/elder.entity";
 import { ProposalEntity } from "src/proposal/entity/proposal.entity";
-import { AddressEntity } from "src/utils/entities/address.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('caregiver')
@@ -18,8 +18,14 @@ export class CaregiverEntity {
     @Column({type: "varchar", nullable: false, unique: true})
     cpf: string;
 
+    @Column({type: "varchar", nullable: false})
+    photo: string;
+
     @Column({type: "varchar", nullable: false, unique: true})
     email: string;
+
+    @Column({type: "varchar", nullable: false})
+    phone: string;
 
     @Column({type: "varchar", nullable: false})
     date_birth: string;

@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsString, Matches, ValidateNested } from "class-validator";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
 
 export class CreateElderDto {
     @IsString()
@@ -12,6 +12,10 @@ export class CreateElderDto {
     @Matches(/[0-9]{3}[\.][0-9]{3}[\.][0-9]{3}[-][0-9]{2}/, 
     {message: "Campo deve seguir padrão XXX.XXX.XXX-XX"})
     readonly cpf: string;
+
+    @IsString()
+    @IsNotEmpty({message: "Campo de Foto não pode estar vazio."})
+    readonly photo: string;
 
     @IsString()
     @IsNotEmpty({message: "Campo de Data de Nascimento não pode estar vazio."})

@@ -1,4 +1,4 @@
-import { AddressEntity } from "src/utils/entities/address.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
 import { Kinship } from "src/utils/enum/kinship-responsible.enum";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ElderEntity } from "./elder.entity";
@@ -16,7 +16,13 @@ export class ResponsibleEntity {
     cpf: string;
 
     @Column({type: "varchar", nullable: false})
+    photo: string;
+
+    @Column({type: "varchar", nullable: false})
     phone: string;
+
+    @Column({type: "varchar", nullable: false})
+    date_birth: string;
 
     @Column({type: "enum", enum: Kinship, nullable: false})
     kinship: Kinship;

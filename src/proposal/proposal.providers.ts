@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { AddressEntity } from 'src/utils/entities/address.entity';
+import { AddressEntity } from 'src/address/entities/address.entity';
 import { ElderEntity } from 'src/patients/entities/elder.entity';
 import { ProposalEntity } from './entity/proposal.entity';
 import { CaregiverEntity } from 'src/caregiver/entities/caregiver.entity';

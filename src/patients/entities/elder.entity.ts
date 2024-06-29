@@ -1,4 +1,4 @@
-import { AddressEntity } from "src/utils/entities/address.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ResponsibleEntity } from "./responsible.entity";
 import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";
@@ -22,6 +22,9 @@ export class ElderEntity{
 
     @Column({type: "varchar", nullable: false, unique: true})
     cpf: string;
+
+    @Column({type: "varchar", nullable: false})
+    photo: string;
 
     @Column({type: "varchar", nullable: false})
     date_birth: string;

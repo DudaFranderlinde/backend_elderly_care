@@ -1,11 +1,11 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Post, ValidationPipe, Request, Res, UseGuards, Put } from "@nestjs/common";
-import { CaregiverService } from "../service/caregiver.service";
-import { CreateCaregiverDTO } from "../dto/createCaregiver.dto";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
+import { CreateCaregiverDTO } from "./dto/createCaregiver.dto";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
 import { Response } from 'express';
-import { CredentialCaregiverDto } from "../dto/credentialsCaregiver.dto";
+import { CredentialCaregiverDto } from "./dto/credentialsCaregiver.dto";
 import { JwtAuthGuard } from "src/core/auth/guard/jwt-auth.guard";
-import { UpdateCaregiverDTO } from "../dto/updateCaregiver.dto";
+import { UpdateCaregiverDTO } from "./dto/updateCaregiver.dto";
+import { CaregiverService } from "./caregiver.service";
 
 @Controller('caregiver')
 export class CaregiverController {
@@ -15,15 +15,29 @@ export class CaregiverController {
 
     @Post('/signup')
     async singUp(@Body(ValidationPipe) createCaregiver: CreateCaregiverDTO, @Body('address') createAddress: CreateAddressDto) {
-        const caregiver = this.service.createUser(createCaregiver, createAddress);
+      try {
+        const caregiver = await this.service.createUser(createCaregiver, createAddress);
 
-        if(caregiver == null){
+        if(caregiver == "cpf"){
             throw new HttpException(`Informação inválida! CPF já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
-          }
-          
-          return {
-            message: 'Cadastro realizado.'
-          }
+        }
+
+        if(caregiver == "email"){
+          throw new HttpException(`Informação inválida! Email já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        }
+
+        return {
+          message: 'Cadastro realizado.'
+        }
+      } catch (error) {
+        if (typeof error === 'object') {
+          throw new HttpException(
+            { statusCode: HttpStatus.NOT_FOUND, message: error.message },
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        throw new HttpException({ error }, HttpStatus.BAD_REQUEST);
+      }
     }
 
     @Post('/signin')
@@ -48,10 +62,15 @@ export class CaregiverController {
       }      
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put('/update')
-    async update(@Body() updateCompanyDto: UpdateCaregiverDTO, @Body('id_caregiver') id, @Res() response: Response,){
+    async update(@Body() updateCompanyDto: UpdateCaregiverDTO, @Res() response: Response, @Request() req){
       try {
-        const updated = await this.service.updateCaregiver(updateCompanyDto, id);
+        const updated = await this.service.updateCaregiver(updateCompanyDto, req.user.id);
+
+        if(updated == "email"){
+          throw new HttpException(`Informação inválida! Email já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        }
   
         response.status(HttpStatus.OK).send(updated);
       } catch (error) {
