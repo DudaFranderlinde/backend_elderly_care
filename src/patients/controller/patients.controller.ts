@@ -15,7 +15,7 @@ export class PatientsController {
         private service: PatientService
     ){}
 
-    @Post('singup/responsible')
+    @Post('signup/responsible')
     async singUp(@Body() createResponsible: CreateResponsibleDto, @Body('address') createAddress: CreateAddressDto){
         const responsible = await this.service.createResponsible(createAddress, createResponsible);
 
@@ -30,7 +30,7 @@ export class PatientsController {
           }
     }
 
-    @Post('singup/elder')
+    @Post('signup/elder')
     async singUpElder( @Body() createElder: CreateElderDto, @Body('address') createAddress: CreateAddressDto, @Body('responsible') responsible: number){
         const elder = await this.service.createElder(createAddress, createElder, responsible);
 
