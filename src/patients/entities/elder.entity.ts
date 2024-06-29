@@ -1,7 +1,8 @@
 import { AddressEntity } from "src/utils/entities/address.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ResponsibleEntity } from "./responsible.entity";
 import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";
+import { ProposalEntity } from "src/proposal/entity/proposal.entity";
 
 @Entity('elder')
 export class ElderEntity{

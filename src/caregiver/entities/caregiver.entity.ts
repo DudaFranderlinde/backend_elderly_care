@@ -1,4 +1,5 @@
 import { ElderEntity } from "src/patients/entities/elder.entity";
+import { ProposalEntity } from "src/proposal/entity/proposal.entity";
 import { AddressEntity } from "src/utils/entities/address.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -8,6 +9,7 @@ export class CaregiverEntity {
     id_caregiver: number;
 
     @OneToMany(()=> ElderEntity, (elder)=> elder.caregiver_id)
+    @JoinColumn({name: 'elder_id'})
     elder_id: ElderEntity;
 
     @Column({type: "varchar", nullable: false})
@@ -16,7 +18,7 @@ export class CaregiverEntity {
     @Column({type: "varchar", nullable: false, unique: true})
     cpf: string;
 
-    @Column({type: "varchar", nullable: false})
+    @Column({type: "varchar", nullable: false, unique: true})
     email: string;
 
     @Column({type: "varchar", nullable: false})
@@ -40,4 +42,8 @@ export class CaregiverEntity {
 
     @Column({type: "varchar", nullable: false})
     salt: string;
+
+    @OneToMany(()=> ProposalEntity, (proposal)=> proposal.caregiver_id)
+    @JoinColumn({name: 'proposal_id'})
+    proposal_id: ProposalEntity;
 }
