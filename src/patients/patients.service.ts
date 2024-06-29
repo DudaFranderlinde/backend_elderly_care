@@ -45,19 +45,36 @@ export class PatientService {
         return checkCFP;
     }
 
+    async checkEmail(email: string) {
+        const user = await this.responsibleRepository.findOne({
+            where: {
+                email:email,
+            }
+        })
+
+        return user
+    }
+
     private async hashPassword(senha: string, salt: string): Promise<string> {
         return bcrypt.hash(senha, salt);
     }
 
     async createResponsible(createAddress: CreateAddressDto, createResponsible: CreateResponsibleDto) {
-        return new Promise<ResponsibleEntity>(async (resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const {cep, street, number, district, city, state, complement} = createAddress;
             const {name, cpf, email, kinship, pass, phone} = createResponsible;            
     
             const checkSingUp = await this.checkCPF(cpf);
+            const checkEmail = await this.checkEmail(email);
     
             if (checkSingUp !== null) {
-                return resolve(null);
+                return resolve("cpf");
+            }
+
+            console.log(checkEmail);
+            
+            if (checkEmail !== null) {
+                return resolve("email");
             }
 
             const address = this.addressRepository.create();
@@ -80,9 +97,9 @@ export class PatientService {
             responsible.phone = phone;
             responsible.address = addressCreated;   
             
-            const responsibleCreated = this.responsibleRepository.save(responsible);
+            const responsibleCreated = await this.responsibleRepository.save(responsible);
 
-            return resolve(responsibleCreated);    
+            return resolve(responsibleCreated.id_responsible);    
         })
     }
 
@@ -254,6 +271,10 @@ export class PatientService {
                     id_responsible: id_responsible
                 }
             });
+            
+            if(!findCaregiver){
+                return reject({message: `ID de Responsável ${id_responsible} não foi encontrada`})
+              }
 
             console.log("address");
 
@@ -265,12 +286,6 @@ export class PatientService {
 
             const {id_address} = findAddress
 
-            if(!findCaregiver){
-              return reject({message: `ID de Responsável ${id_responsible} não foi encontrada`})
-            }
-
-            console.log("entrou");
-
             if (address !== undefined) {
                 await this.addressRepository.update(id_address, address);
                 delete updateProfileDto.address
@@ -278,6 +293,13 @@ export class PatientService {
 
             if (updateProfileDto.pass !== undefined) {
                 updateProfileDto.pass = await this.hashPassword(updateProfileDto.pass, findCaregiver.salt)
+            }
+
+            if (updateProfileDto.email  !== undefined) {
+                const checkEmail = await this.checkEmail(updateProfileDto.email)
+                if (checkEmail !== null && checkEmail.id_responsible !== id_responsible) {
+                    return resolve('email')
+                }
             }
 
             await this.responsibleRepository.update(id_responsible, updateProfileDto);

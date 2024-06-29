@@ -30,6 +30,17 @@ export class CaregiverService {
         return checkCFP;
     }
 
+    async checkEmail(email: string) {
+        const user = await this.caregiverRepository.findOne({
+            where: {
+                email:email,
+            }
+        })
+
+        return user
+ 
+    }
+
     private async hashPassword(senha: string, salt: string): Promise<string> {
         return bcrypt.hash(senha, salt);
     }
@@ -41,9 +52,14 @@ export class CaregiverService {
                 const {cep, street, number, district, city, state, complement} = createAddress;
 
                 const checkSingUp = await this.checkCPF(cpf);
+                const checkEmail = await this.checkEmail(email);
 
                 if (checkSingUp !== null) {
-                    resolve(null)
+                    return resolve("cpf")
+                }
+
+                if (checkEmail !== null) {
+                    return resolve("email")
                 }
 
                 const address = this.addressRepository.create()
@@ -70,13 +86,6 @@ export class CaregiverService {
                 caregiver.address = addressCreated;
 
                 const caregiverCreated = await this.caregiverRepository.save(caregiver);
-
-                const find = await this.caregiverRepository.find({
-                    where: {
-                        id_caregiver: caregiverCreated.id_caregiver
-                    }
-                })
-                
                 delete caregiver.password;
                 delete caregiver.salt;
                 resolve(caregiverCreated);
@@ -167,6 +176,18 @@ export class CaregiverService {
                 }
             });
 
+            if(!findCaregiver){
+                return reject({message: `ID de Paciente ${id_caregiver} não foi encontrada`})
+            }
+
+            if (updateProfileDto.email !== undefined) {
+                const checkEmail = await this.checkEmail(updateProfileDto.email)
+                
+                if (checkEmail !== null && checkEmail.id_caregiver !== id_caregiver) {
+                    return resolve("email");
+                }
+            }
+
             const findAddress = await this.addressRepository.findOne({
                 where: {
                     caregiver_id: findCaregiver
@@ -175,9 +196,6 @@ export class CaregiverService {
 
             const {id_address} = findAddress
 
-            if(!findCaregiver){
-              return reject({message: `ID de Paciente ${id_caregiver} não foi encontrada`})
-            }
 
             if (address !== undefined) {
                 await this.addressRepository.update(id_address, address);

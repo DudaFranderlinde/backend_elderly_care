@@ -19,13 +19,17 @@ export class PatientsController {
     async singUp(@Body() createResponsible: CreateResponsibleDto, @Body('address') createAddress: CreateAddressDto){
         const responsible = await this.service.createResponsible(createAddress, createResponsible);
 
-        if(responsible == null){
-            throw new HttpException(`Informação inválida! CPF já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        if(responsible == "cpf"){
+            throw new HttpException(`Informação inválida! Verifique CPF já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        }
+
+        if(responsible == "email"){
+          throw new HttpException(`Informação inválida! Verifique Email já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
         }
         
         return {
             message: 'Cadastro realizado.',
-            id_responsible: responsible.id_responsible
+            id_responsible: responsible
             
           }
     }
@@ -90,13 +94,16 @@ export class PatientsController {
       }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put('update/responsible')
-    async updateResponsible(@Body() updateCompanyDto: UpdateResponsibleDto, @Body('id_responsible') id, @Res() response: Response,){
-      try {
-        console.log(14);
-        
-        const updated = await this.service.update(updateCompanyDto, id);
+    async updateResponsible(@Body() updateCompanyDto: UpdateResponsibleDto, @Res() response: Response, @Request() req){
+      try {    
+        const updated = await this.service.update(updateCompanyDto, req.user.id);
   
+        if(updated == "email"){
+          throw new HttpException(`Informação inválida! Email já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
+        }
+
         response.status(HttpStatus.OK).send(updated);
       } catch (error) {
         if (typeof error === 'object') {
