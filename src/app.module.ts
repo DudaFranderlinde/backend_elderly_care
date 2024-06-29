@@ -5,6 +5,7 @@ import { JwtStrategy } from './core/auth/guard/jwt-strategy';
 import { PatientsModule } from './patients/patients.module';
 import { CaregiverModule } from './caregiver/caregiver.module';
 import { databaseProviders } from './core/database/database.providers';
+import { ProposalModule } from './proposal/proposal.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { databaseProviders } from './core/database/database.providers';
     }),
     CaregiverModule,
     PatientsModule,
+    ProposalModule
   ],
   controllers: [],
   providers: [...databaseProviders, JwtStrategy],
