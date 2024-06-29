@@ -238,6 +238,29 @@ export class CaregiverService {
                     if (e.address.complement == null) {
                         delete e.address.complement
                     }
+
+                    const format = e.date_birth.split('/')
+                    const day = parseInt(format[0])
+                    const month = parseInt(format[1])
+                    const year = parseInt(format[2])
+                    const date_birth = new Date(year, month, day)
+                    console.log(date_birth);
+                    
+                    const today = new Date()
+                    let age = today.getFullYear().valueOf() - date_birth.getFullYear().valueOf();
+                    
+                    const monthDiff = today.getMonth() - date_birth.getMonth();
+                    const dayDiff = today.getDate() - date_birth.getDate();
+                
+                    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                        age = age - 1 ;
+                    }
+
+                    if (age < 0) {
+                        age = 0
+                    }
+
+                    e.date_birth = age.toString()
                 })     
                return resolve(foundCaregiver)
             } catch (error) {
