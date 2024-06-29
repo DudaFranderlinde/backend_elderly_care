@@ -55,6 +55,28 @@ export class PatientService {
         return user
     }
 
+    async checkAge(date: string) {
+        const format = date.split('/')
+        const day = parseInt(format[0])
+        const month = parseInt(format[1])
+        const year = parseInt(format[2])
+        const date_birth = new Date(year, month, day)
+        const today = new Date()
+        let age = today.getFullYear().valueOf() - date_birth.getFullYear().valueOf();
+        const monthDiff = today.getMonth() - date_birth.getMonth();
+        const dayDiff = today.getDate() - date_birth.getDate();
+    
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+            age = age - 1 ;
+        }
+
+        if (age >= 18) {
+            return true
+        }
+
+        return false
+    }
+
     private async hashPassword(senha: string, salt: string): Promise<string> {
         return bcrypt.hash(senha, salt);
     }
@@ -62,7 +84,7 @@ export class PatientService {
     async createResponsible(createAddress: CreateAddressDto, createResponsible: CreateResponsibleDto) {
         return new Promise(async (resolve, reject) => {
             const {cep, street, number, district, city, state, complement} = createAddress;
-            const {name, cpf, email, kinship, pass, phone} = createResponsible;            
+            const {name, cpf, email, kinship, pass, phone, date_birth, photo} = createResponsible;            
     
             const checkSingUp = await this.checkCPF(cpf);
             const checkEmail = await this.checkEmail(email);
@@ -87,9 +109,15 @@ export class PatientService {
             address.complement = complement;
             const addressCreated = await this.addressRepository.save(address);
 
+            if (await this.checkAge(date_birth) === false) {
+                return resolve('idade')
+            }
+
             const responsible = this.responsibleRepository.create();
             responsible.name = name;
             responsible.cpf = cpf;
+            responsible.date_birth = date_birth;
+            responsible.photo = photo;
             responsible.email = email;
             responsible.kinship = kinship;
             responsible.salt =  await bcrypt.genSalt();
@@ -106,7 +134,7 @@ export class PatientService {
     createElder(createAddress: CreateAddressDto, createElder: CreateElderDto, responsible: number) {
         return new Promise(async (resolve, reject) => {
             const {cep, street, number, district, city, state, complement} = createAddress;
-            const {name, cpf, date_birth, historic, ministration} = createElder;
+            const {name, cpf, date_birth, historic, ministration, photo} = createElder;
 
             const findResponsible = await this.responsibleRepository.findOne({
                 where: {
@@ -138,6 +166,7 @@ export class PatientService {
             const elder = this.elderRepository.create();
             elder.name = name;
             elder.cpf = cpf;
+            elder.photo = photo;
             elder.date_birth = date_birth;
             elder.historic = historic;
             elder.ministration = ministration;

@@ -26,6 +26,10 @@ export class PatientsController {
         if(responsible == "email"){
           throw new HttpException(`Informação inválida! Verifique Email já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
         }
+
+        if(responsible == "idade"){
+          throw new HttpException(`Informação inválida! Menor de idade não é permitido ser declarado como resposável.`, HttpStatus.CONFLICT)
+        }
         
         return {
             message: 'Cadastro realizado.',

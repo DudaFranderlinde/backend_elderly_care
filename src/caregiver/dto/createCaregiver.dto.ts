@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsString, Matches, MinLength, ValidateNested } from "class-validator";
+import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, Matches, MinLength, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "src/address/dto/createAddress.dto";
 
 export class CreateCaregiverDTO {
@@ -13,6 +13,15 @@ export class CreateCaregiverDTO {
     @Matches(/[0-9]{3}[\.][0-9]{3}[\.][0-9]{3}[-][0-9]{2}/, 
     {message: "Campo deve seguir padrão XXX.XXX.XXX-XX"})
     readonly cpf: string;
+
+    @IsString()
+    @IsNotEmpty({message: "Campo de Foto não pode estar vazio."})
+    readonly photo: string;
+
+    @IsString()
+    @IsPhoneNumber('BR')
+    @IsNotEmpty({message: "Campo de Telefone não pode estar vazio."})
+    readonly phone: string;
 
     @IsString()
     @IsEmail()

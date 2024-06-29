@@ -48,7 +48,7 @@ export class CaregiverService {
     createUser(createCaregiver: CreateCaregiverDTO, createAddress: CreateAddressDto) {
         return new Promise(async (resolve, reject) => {
             try {
-                const {name, cpf, date_birth, description_experience, experience, training_time, email, password} = createCaregiver;
+                const {name, cpf, date_birth, description_experience, experience, training_time, email, password, photo, phone} = createCaregiver;
                 const {cep, street, number, district, city, state, complement} = createAddress;
 
                 const checkSingUp = await this.checkCPF(cpf);
@@ -76,7 +76,9 @@ export class CaregiverService {
                 const caregiver = this.caregiverRepository.create()
                 caregiver.name = name;
                 caregiver.email = email;
+                caregiver.photo = photo;
                 caregiver.cpf = cpf;
+                caregiver.phone = phone;
                 caregiver.salt = await bcrypt.genSalt();
                 caregiver.password = await this.hashPassword(password, caregiver.salt);
                 caregiver.date_birth = date_birth;
@@ -85,9 +87,13 @@ export class CaregiverService {
                 caregiver.training_time = training_time;
                 caregiver.address = addressCreated;
 
+                console.log("fim");
+                
                 const caregiverCreated = await this.caregiverRepository.save(caregiver);
                 delete caregiver.password;
                 delete caregiver.salt;
+                console.log(caregiverCreated);
+                
                 resolve(caregiverCreated);
 
             } catch (error) {

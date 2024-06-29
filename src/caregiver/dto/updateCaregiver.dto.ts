@@ -1,8 +1,12 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength, ValidateNested } from "class-validator";
+import { IsEmail, IsOptional, IsString, Matches, MinLength, ValidateNested } from "class-validator";
 import { UpdateAddressDto } from "src/address/dto/updateAddress.dto";
 
 export class UpdateCaregiverDTO {
+    @IsString()
+    @IsOptional()
+    readonly photo: string;
+
     @IsString()
     @IsEmail()
     @IsOptional()
