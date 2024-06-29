@@ -18,8 +18,14 @@ export class CaregiverEntity {
     @Column({type: "varchar", nullable: false, unique: true})
     cpf: string;
 
+    @Column({type: "varchar", nullable: false})
+    photo: string;
+
     @Column({type: "varchar", nullable: false, unique: true})
     email: string;
+
+    @Column({type: "varchar", nullable: false})
+    phone: string;
 
     @Column({type: "varchar", nullable: false})
     date_birth: string;

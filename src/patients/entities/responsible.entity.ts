@@ -16,7 +16,13 @@ export class ResponsibleEntity {
     cpf: string;
 
     @Column({type: "varchar", nullable: false})
+    photo: string;
+
+    @Column({type: "varchar", nullable: false})
     phone: string;
+
+    @Column({type: "varchar", nullable: false})
+    date_birth: string;
 
     @Column({type: "enum", enum: Kinship, nullable: false})
     kinship: Kinship;

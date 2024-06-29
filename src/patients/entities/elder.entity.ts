@@ -24,6 +24,9 @@ export class ElderEntity{
     cpf: string;
 
     @Column({type: "varchar", nullable: false})
+    photo: string;
+
+    @Column({type: "varchar", nullable: false})
     date_birth: string;
 
     @OneToOne(() => AddressEntity, (address) => address.elder_id)
