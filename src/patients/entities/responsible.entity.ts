@@ -1,4 +1,4 @@
-import { AddressEntity } from "src/utils/entities/address.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
 import { Kinship } from "src/utils/enum/kinship-responsible.enum";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ElderEntity } from "./elder.entity";

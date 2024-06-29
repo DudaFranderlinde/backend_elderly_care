@@ -1,6 +1,6 @@
 import { ElderEntity } from "src/patients/entities/elder.entity";
 import { ProposalEntity } from "src/proposal/entity/proposal.entity";
-import { AddressEntity } from "src/utils/entities/address.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('caregiver')

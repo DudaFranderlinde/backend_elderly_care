@@ -1,11 +1,11 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Post, ValidationPipe, Request, Res, UseGuards, Put } from "@nestjs/common";
-import { CaregiverService } from "../service/caregiver.service";
-import { CreateCaregiverDTO } from "../dto/createCaregiver.dto";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
+import { CreateCaregiverDTO } from "./dto/createCaregiver.dto";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
 import { Response } from 'express';
-import { CredentialCaregiverDto } from "../dto/credentialsCaregiver.dto";
+import { CredentialCaregiverDto } from "./dto/credentialsCaregiver.dto";
 import { JwtAuthGuard } from "src/core/auth/guard/jwt-auth.guard";
-import { UpdateCaregiverDTO } from "../dto/updateCaregiver.dto";
+import { UpdateCaregiverDTO } from "./dto/updateCaregiver.dto";
+import { CaregiverService } from "./caregiver.service";
 
 @Controller('caregiver')
 export class CaregiverController {

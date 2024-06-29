@@ -1,4 +1,4 @@
-import { AddressEntity } from "src/utils/entities/address.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ResponsibleEntity } from "./responsible.entity";
 import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";

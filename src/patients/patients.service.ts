@@ -1,16 +1,16 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
-import { ResponsibleEntity } from "../entities/responsible.entity";
-import { AddressEntity } from "src/utils/entities/address.entity";
-import { ElderEntity } from "../entities/elder.entity";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
-import { CreateResponsibleDto } from "../dto/createResponsible.dto";
-import { CreateElderDto } from "../dto/createElder.dto";
+import { ResponsibleEntity } from "./entities/responsible.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
+import { ElderEntity } from "./entities/elder.entity";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
+import { CreateResponsibleDto } from "./dto/createResponsible.dto";
+import { CreateElderDto } from "./dto/createElder.dto";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
-import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
-import { UpdateElderDto } from "../dto/updateElder.dto";
-import { UpdateResponsibleDto } from "../dto/updateResponsible.dto";
+import { CredentialResponsibleDto } from "./dto/credentialResponsible.dto";
+import { UpdateElderDto } from "./dto/updateElder.dto";
+import { UpdateResponsibleDto } from "./dto/updateResponsible.dto";
 
 
 @Injectable()

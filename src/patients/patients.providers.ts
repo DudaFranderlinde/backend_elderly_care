@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { ResponsibleEntity } from './entities/responsible.entity';
 import { ElderEntity } from './entities/elder.entity';
-import { AddressEntity } from 'src/utils/entities/address.entity';
+import { AddressEntity } from 'src/address/entities/address.entity';
 
 export const patientsProviders = [
     {

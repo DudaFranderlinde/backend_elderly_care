@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsString, Matches, MinLength, ValidateNested } from "class-validator";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
 
 export class CreateCaregiverDTO {
 

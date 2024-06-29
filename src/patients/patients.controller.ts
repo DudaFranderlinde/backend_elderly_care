@@ -1,13 +1,13 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Put, Request, Res, UseGuards } from "@nestjs/common";
 import { Response } from 'express';
-import { PatientService } from "../service/patients.service";
-import { CreateElderDto } from "../dto/createElder.dto";
-import { CreateResponsibleDto } from "../dto/createResponsible.dto";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
-import { CredentialResponsibleDto } from "../dto/credentialResponsible.dto";
+import { PatientService } from "./patients.service";
+import { CreateElderDto } from "./dto/createElder.dto";
+import { CreateResponsibleDto } from "./dto/createResponsible.dto";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
+import { CredentialResponsibleDto } from "./dto/credentialResponsible.dto";
 import { JwtAuthGuard } from "src/core/auth/guard/jwt-auth.guard";
-import { UpdateElderDto } from "../dto/updateElder.dto";
-import { UpdateResponsibleDto } from "../dto/updateResponsible.dto";
+import { UpdateElderDto } from "./dto/updateElder.dto";
+import { UpdateResponsibleDto } from "./dto/updateResponsible.dto";
 
 @Controller('patients')
 export class PatientsController {

@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength, ValidateNested } from "class-validator";
-import { UpdateAddressDto } from "src/utils/dto/updateAddress.dto";
+import { UpdateAddressDto } from "src/address/dto/updateAddress.dto";
 
 export class UpdateCaregiverDTO {
     @IsString()

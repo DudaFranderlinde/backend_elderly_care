@@ -1,13 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { CaregiverEntity } from "../entities/caregiver.entity";
-import { AddressEntity } from "src/utils/entities/address.entity";
+import { AddressEntity } from "src/address/entities/address.entity";
 import { Repository } from "typeorm";
-import { CreateCaregiverDTO } from "../dto/createCaregiver.dto";
-import { CreateAddressDto } from "src/utils/dto/createAddress.dto";
 import * as bcrypt from 'bcrypt';
-import { CredentialCaregiverDto } from "../dto/credentialsCaregiver.dto";
 import { JwtService } from "@nestjs/jwt";
-import { UpdateCaregiverDTO } from "../dto/updateCaregiver.dto";
+import { CaregiverEntity } from "./entities/caregiver.entity";
+import { CreateCaregiverDTO } from "./dto/createCaregiver.dto";
+import { CreateAddressDto } from "src/address/dto/createAddress.dto";
+import { CredentialCaregiverDto } from "./dto/credentialsCaregiver.dto";
+import { UpdateCaregiverDTO } from "./dto/updateCaregiver.dto";
 
 
 @Injectable()
