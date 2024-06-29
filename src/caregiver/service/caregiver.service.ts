@@ -197,5 +197,31 @@ export class CaregiverService {
           }
         });
     }
+
+    async getCaregivers (){
+        return new Promise(async (resolve, reject)=> {
+            try {
+                const foundCaregiver = await this.caregiverRepository.find({
+                    relations:{
+                        address: true
+                    }
+                })
+                foundCaregiver.forEach((e)=> {
+                    delete e.id_caregiver
+                    delete e.password
+                    delete e.salt
+    
+                    
+                    if (e.address.complement == null) {
+                        delete e.address.complement
+                    }
+                })
+                
+               return resolve(foundCaregiver)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
     
 }
