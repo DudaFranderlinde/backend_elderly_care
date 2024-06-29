@@ -9,5 +9,5 @@ export class CredentialResponsibleDto{
     @IsString()
     @IsNotEmpty({message: "Campo de Senha não pode estar vazio."})
     @MinLength(8)
-    readonly pass: string;
+    readonly password: string;
 }

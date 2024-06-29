@@ -184,7 +184,7 @@ export class PatientService {
     }
 
     async checkCredentials(credentials: CredentialResponsibleDto) {
-        const { email, pass } = credentials;
+        const { email, password } = credentials;
         const user = await this.responsibleRepository.findOne({
             where: {
                 email:email,
@@ -195,7 +195,7 @@ export class PatientService {
             return(null)
         }
  
-        const checkPass =  await this.checkPassword(pass, user.salt, user.pass)
+        const checkPass =  await this.checkPassword(password, user.salt, user.pass)
 
         if (user && checkPass == true) {   
             return user;
