@@ -4,6 +4,8 @@ import { Repository } from "typeorm";
 import { CreateProposalDto } from "./dto/createProposal.dto";
 import { ProposalEntity } from "./entity/proposal.entity";
 import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";
+import { UpdateStatusDto } from "./dto/updateStatus.dto";
+import { Status } from "src/utils/enum/proposal-status.enum";
 
 @Injectable()
 export class ProposalService {
@@ -81,6 +83,36 @@ export class ProposalService {
                     }
                 });
                 return resolve(findProposal)
+            } catch (error) {
+                reject({ message: 'Ocorreu um erro! Tente novamente mais tarde.', code: 400 });      
+            }
+        })
+    }
+
+    async updateStatus(update: UpdateStatusDto){
+        return new Promise(async (resolve, reject) => {
+            try {
+                const { status, id_status } = update
+
+                const findProposal = await this.proposalRepository.find({
+                    where: {
+                        id_proposal: id_status
+                    }
+                });
+
+                if (!findProposal) {
+                    return reject({message: `ID de Cuidador não foi encontrada`})
+                }
+
+                if (status) {
+                    await this.proposalRepository.update(id_status, {status: Status.ACEITO})
+                    return resolve({message: 'Informações atualizadas!'}) 
+                }
+                
+                if (!status) {
+                    await this.proposalRepository.update(id_status, {status: Status.RECUSADO})
+                    return resolve({message: 'Informações atualizadas!'}) 
+                }
             } catch (error) {
                 reject({ message: 'Ocorreu um erro! Tente novamente mais tarde.', code: 400 });      
             }
