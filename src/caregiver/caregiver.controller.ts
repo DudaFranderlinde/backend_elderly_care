@@ -88,7 +88,7 @@ export class CaregiverController {
     async All(@Res() response: Response) {
       try {
         const user = await this.service.getCaregivers()
-       
+  
         if (user) {
           response.status(HttpStatus.OK).send(user)
           return user

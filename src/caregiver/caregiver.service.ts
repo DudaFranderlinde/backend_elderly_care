@@ -234,13 +234,11 @@ export class CaregiverService {
                     delete e.id_caregiver
                     delete e.password
                     delete e.salt
-    
-                    
+
                     if (e.address.complement == null) {
                         delete e.address.complement
                     }
-                })
-                
+                })     
                return resolve(foundCaregiver)
             } catch (error) {
                 reject(error)
