@@ -32,7 +32,6 @@ export class CaregiverController {
     }
 
     @UseGuards(JwtAuthGuard)
-
     @Get('/profile')
     async me(@Request() req, @Res() response: Response) {
       try {
@@ -64,5 +63,21 @@ export class CaregiverController {
         }
         throw new HttpException({ error }, HttpStatus.BAD_REQUEST);
       }
+    }
+
+    @Get('/getAvailable')
+    async All(@Res() response: Response) {
+      try {
+        const user = await this.service.getCaregivers()
+       
+        if (user) {
+          response.status(HttpStatus.OK).send(user)
+          return user
+        }
+
+        response.status(HttpStatus.BAD_REQUEST).send(`message:{Sem cuidadores cadastras no momento}`)
+      } catch (error) {
+        throw new HttpException({ reason: error?.detail }, HttpStatus.BAD_REQUEST)
+      }      
     }
 }
