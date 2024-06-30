@@ -108,6 +108,7 @@ export class ProposalService {
 
                 if (status) {
                     await this.proposalRepository.update(id_status, {status: Status.ACEITO})
+                    await this
                     return resolve({message: 'Informações atualizadas!'}) 
                 }
                 
