@@ -36,7 +36,7 @@ A aplicação é baseada em uma arquitetura cliente-servidor, dividida em duas p
     <img align="center" alt="Duda-React" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg">
     <img align="center" alt="Duda-TypeScript" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg">
     <img align="center" alt="Duda-TypeScript" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nestjs/nestjs-original.svg" />    
-    <hr align="center">
+    <hr align="center" style="border: none; height: 2px;">
 </div>
 
 ## Configurações ⚙️
