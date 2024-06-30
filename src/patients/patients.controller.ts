@@ -78,7 +78,8 @@ export class PatientsController {
           throw new HttpException({ reason: error?.detail }, HttpStatus.BAD_REQUEST)
         }      
     }
-
+    
+    @UseGuards(JwtAuthGuard)
     @Put('update/elder')
     async updateElder(@Body() updateCompanyDto: UpdateElderDto, @Body('id_elder') id, @Res() response: Response,){
       try {
