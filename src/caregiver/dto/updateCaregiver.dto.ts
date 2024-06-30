@@ -10,7 +10,7 @@ export class UpdateCaregiverDTO {
     @IsString()
     @IsPhoneNumber('BR')
     @IsOptional()
-    readonly phone: string;
+    phone: string;
 
     @IsString()
     @IsEmail()
