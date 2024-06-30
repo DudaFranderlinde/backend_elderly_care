@@ -119,4 +119,21 @@ export class PatientsController {
         throw new HttpException({ error }, HttpStatus.BAD_REQUEST);
       }
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('myElder')
+    async elders(@Request() req, @Res() response: Response) {
+      try {  
+        const user = await this.service.getElder(req.user.id)
+       
+        if (user) {
+          response.status(HttpStatus.OK).send(user)
+          return user
+        }
+
+        response.status(HttpStatus.BAD_REQUEST).send(`message:{Nenhum usuário encontrado com o ID ${+req.user.id}}`)
+      } catch (error) {
+        throw new HttpException({ reason: error?.detail }, HttpStatus.BAD_REQUEST)
+      }      
+  }   
 }

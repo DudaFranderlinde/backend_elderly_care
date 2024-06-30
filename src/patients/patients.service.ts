@@ -339,4 +339,22 @@ export class PatientService {
           }
         });
     }
+
+    getElder(id: number){
+        return new Promise(async (resolve, reject)=> {
+            try {
+                const foundResponsible = await this.elderRepository.find({
+                    where: {
+                        responsible_id: {
+                            id_responsible: id
+                        }
+                    }
+                })
+
+               return resolve(foundResponsible)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
