@@ -231,7 +231,6 @@ export class CaregiverService {
                     }
                 })
                 foundCaregiver.forEach((e)=> {
-                    delete e.id_caregiver
                     delete e.password
                     delete e.salt
 
