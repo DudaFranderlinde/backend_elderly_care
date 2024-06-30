@@ -6,21 +6,22 @@ import { ProposalEntity } from "./entity/proposal.entity";
 import { CaregiverEntity } from "src/caregiver/entities/caregiver.entity";
 import { UpdateStatusDto } from "./dto/updateStatus.dto";
 import { Status } from "src/utils/enum/proposal-status.enum";
+import { ElderEntity } from "src/patients/entities/elder.entity";
 
 @Injectable()
 export class ProposalService {
     constructor(
         @Inject('CAREGIVER_REPOSITORY')
         private caregiverRepository: Repository<CaregiverEntity>,
-        @Inject('RESPONSIBLE_REPOSITORY')
-        private responsibleRepository: Repository<ResponsibleEntity>,
+        @Inject('ELDER_REPOSITORY')
+        private elderRepository: Repository<ElderEntity>,
         @Inject('PROPOSAL_REPOSITORY')
         private proposalRepository: Repository<ProposalEntity>,
     ){}
 
-    async createProposal(createProposal: CreateProposalDto, responsible: number) {
+    async createProposal(createProposal: CreateProposalDto) {
         return new Promise<ProposalEntity>(async (resolve, reject) => {
-            const { caregiver_id } = createProposal;
+            const { caregiver_id, elder_id } = createProposal;
 
             const findCaregiver = await this.caregiverRepository.findOne({
                 where: {
@@ -32,19 +33,19 @@ export class ProposalService {
                 return reject({message: `ID de Cuidador não foi encontrada`})
             }
 
-            const findResponsible = await this.responsibleRepository.findOne({
+            const findElder = await this.elderRepository.findOne({
                 where: {
-                    id_responsible: responsible
+                    id_elder: elder_id
                 }
             })
 
-            if (!findResponsible) {
+            if (!findElder) {
                 return reject({message: `ID de Responsável não foi encontrada`})
             }
 
             const proposal = this.proposalRepository.create();
             proposal.caregiver_id = findCaregiver;
-            proposal.resposible_id = findResponsible;
+            proposal.elder_id = findElder;
 
             const proposalCreated = await this.proposalRepository.save(proposal);   
             return resolve(proposalCreated);
@@ -56,7 +57,7 @@ export class ProposalService {
             try {
                 const findProposal = await this.proposalRepository.find({
                     relations: {
-                        resposible_id: true,
+                        elder_id: true,
                         caregiver_id: true
                     }
                 });
@@ -78,8 +79,9 @@ export class ProposalService {
                         }
                     },
                     relations: {
-                        resposible_id: true,
-                        caregiver_id: true
+                        elder_id: {
+                            responsible_id: true
+                        }
                     }
                 });
                 return resolve(findProposal)

@@ -3,7 +3,6 @@ import { AddressEntity } from 'src/address/entities/address.entity';
 import { ElderEntity } from 'src/patients/entities/elder.entity';
 import { ProposalEntity } from './entity/proposal.entity';
 import { CaregiverEntity } from 'src/caregiver/entities/caregiver.entity';
-import { ResponsibleEntity } from 'src/patients/entities/responsible.entity';
 
 export const proposalProviders = [
     {
@@ -12,8 +11,8 @@ export const proposalProviders = [
         inject: ['DATA_SOURCE'],
     },
     {
-        provide: 'RESPONSIBLE_REPOSITORY',
-        useFactory: (dataSource: DataSource) => dataSource.getRepository(ResponsibleEntity),
+        provide: 'ELDER_REPOSITORY',
+        useFactory: (dataSource: DataSource) => dataSource.getRepository(ElderEntity),
         inject: ['DATA_SOURCE'],
     },
     {

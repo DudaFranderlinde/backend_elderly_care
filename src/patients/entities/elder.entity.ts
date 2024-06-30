@@ -38,4 +38,8 @@ export class ElderEntity{
 
     @Column({type: "varchar", nullable: false})
     historic: string;
+
+    @OneToMany(()=> ProposalEntity, (proposal)=> proposal.elder_id)
+    @JoinColumn({name: 'proposal_id'})
+    proposal_id: ProposalEntity;
 }

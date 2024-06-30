@@ -43,8 +43,4 @@ export class ResponsibleEntity {
     @OneToMany(()=> ElderEntity, (elder)=> elder.responsible_id)
     @JoinColumn({name: 'elder_id'})
     elder_id: ElderEntity;
-
-    @OneToMany(()=> ProposalEntity, (proposal)=> proposal.resposible_id)
-    @JoinColumn({name: 'proposal_id'})
-    proposal_id: ProposalEntity;
 }

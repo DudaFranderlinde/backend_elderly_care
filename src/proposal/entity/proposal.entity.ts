@@ -13,9 +13,9 @@ export class ProposalEntity {
     @JoinColumn({name:"caregiver_id"})
     caregiver_id: CaregiverEntity;
     
-    @ManyToOne(()=> ResponsibleEntity, (responsible)=> responsible.proposal_id)
-    @JoinColumn({name:"resposible_id"})
-    resposible_id: ResponsibleEntity;
+    @ManyToOne(()=> ElderEntity, (elder)=> elder.proposal_id)
+    @JoinColumn({name:"elder_id"})
+    elder_id: ElderEntity;
 
     @Column({type: "enum", enum: Status, nullable: false, default: Status.ENVIADO})
     status: Status;

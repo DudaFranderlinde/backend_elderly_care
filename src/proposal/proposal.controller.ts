@@ -13,7 +13,7 @@ export class ProposalController {
 
     @Post('send')
     async singUp(@Request() req, @Body() createProposal: CreateProposalDto){
-        const responsible = await this.service.createProposal(createProposal, req.user.id)
+        const responsible = await this.service.createProposal(createProposal)
 
         if(responsible == null){
             throw new HttpException(`Informação inválida! CPF já foi utilizado em outra conta.`, HttpStatus.CONFLICT)
