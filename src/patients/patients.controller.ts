@@ -8,11 +8,13 @@ import { CredentialResponsibleDto } from "./dto/credentialResponsible.dto";
 import { JwtAuthGuard } from "src/core/auth/guard/jwt-auth.guard";
 import { UpdateElderDto } from "./dto/updateElder.dto";
 import { UpdateResponsibleDto } from "./dto/updateResponsible.dto";
+import { AuthService } from "src/core/auth/service/auth.service";
 
 @Controller('patients')
 export class PatientsController {
     constructor(
-        private service: PatientService
+        private service: PatientService,
+        private serviceAuth: AuthService
     ){}
 
     @Post('signup/responsible')
@@ -39,7 +41,7 @@ export class PatientsController {
     }
 
     @Post('signup/elder')
-    async singUpElder( @Body() createElder: CreateElderDto, @Body('address') createAddress: CreateAddressDto, @Body('responsible') responsible: number){
+    async singUpElder( @Body() createElder: CreateElderDto, @Body('address') createAddress: CreateAddressDto, @Body('responsible') responsible: number){ 
         const elder = await this.service.createElder(createAddress, createElder, responsible);
 
         if(elder == null){
@@ -136,5 +138,24 @@ export class PatientsController {
       } catch (error) {
         throw new HttpException({ reason: error?.detail }, HttpStatus.BAD_REQUEST)
       }      
-  }   
+  } 
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('token')
+  async token(@Request() req, @Res() response: Response) {
+    try {  
+      if (req !== undefined) {
+        response.status(HttpStatus.OK).send({
+          id: req.user.id
+        })
+      }
+
+      response.status(HttpStatus.BAD_REQUEST).send(`message:{Nenhum usuário encontrado com o ID ${+req.user.id}}`)
+  
+    } catch (error) {
+      throw new HttpException({ reason: error?.detail }, HttpStatus.BAD_REQUEST)
+    }      
+}  
+  
+  
 }
