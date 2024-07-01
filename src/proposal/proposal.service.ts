@@ -108,7 +108,9 @@ export class ProposalService {
 
                     e.elder_id.date_birth = age.toString()
                 })
-                return resolve(findProposal)
+
+                const filtreProposal = findProposal.filter((e)=> e.status !== Status.RECUSADO)
+                return resolve(filtreProposal)
             } catch (error) {
                 reject({ message: 'Ocorreu um erro! Tente novamente mais tarde.', code: 400 });      
             }
