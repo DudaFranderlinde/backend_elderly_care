@@ -93,7 +93,6 @@ export class PatientService {
                 return resolve("cpf");
             }
 
-            console.log(checkEmail);
             
             if (checkEmail !== null) {
                 return resolve("email");
@@ -293,7 +292,6 @@ export class PatientService {
           try {
             let { address } = updateProfileDto;
 
-            console.log("care");
             
             const findCaregiver = await this.responsibleRepository.findOne({
                 where:{
@@ -305,7 +303,6 @@ export class PatientService {
                 return reject({message: `ID de Responsável ${id_responsible} não foi encontrada`})
               }
 
-            console.log("address");
 
             const findAddress = await this.addressRepository.findOne({
                 where: {
@@ -357,7 +354,6 @@ export class PatientService {
                     const month = parseInt(format[1])
                     const year = parseInt(format[2])
                     const date_birth = new Date(year, month, day)
-                    console.log(date_birth);
                     
                     const today = new Date()
                     let age = today.getFullYear().valueOf() - date_birth.getFullYear().valueOf();

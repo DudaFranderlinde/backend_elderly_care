@@ -85,7 +85,6 @@ export class PatientsController {
     @Put('update/elder')
     async updateElder(@Body() updateCompanyDto: UpdateElderDto, @Body('id_elder') id, @Res() response: Response,){
       try {
-        console.log(14);
         
         const updated = await this.service.updateElder(updateCompanyDto, id);
   

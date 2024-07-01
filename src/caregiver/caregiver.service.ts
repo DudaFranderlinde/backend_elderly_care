@@ -87,12 +87,10 @@ export class CaregiverService {
                 caregiver.training_time = training_time;
                 caregiver.address = addressCreated;
 
-                console.log("fim");
                 
                 const caregiverCreated = await this.caregiverRepository.save(caregiver);
                 delete caregiver.password;
                 delete caregiver.salt;
-                console.log(caregiverCreated);
                 
                 resolve(caregiverCreated);
 
@@ -243,7 +241,6 @@ export class CaregiverService {
                     const month = parseInt(format[1])
                     const year = parseInt(format[2])
                     const date_birth = new Date(year, month, day)
-                    console.log(date_birth);
                     
                     const today = new Date()
                     let age = today.getFullYear().valueOf() - date_birth.getFullYear().valueOf();
