@@ -84,6 +84,30 @@ export class ProposalService {
                         }
                     }
                 });
+
+                findProposal.forEach((e)=> {
+                    const format = e.elder_id.date_birth.split('/')
+                    const day = parseInt(format[0])
+                    const month = parseInt(format[1])
+                    const year = parseInt(format[2])
+                    const date_birth = new Date(year, month, day)
+                    
+                    const today = new Date()
+                    let age = today.getFullYear().valueOf() - date_birth.getFullYear().valueOf();
+                    
+                    const monthDiff = today.getMonth() - date_birth.getMonth();
+                    const dayDiff = today.getDate() - date_birth.getDate();
+                
+                    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                        age = age - 1 ;
+                    }
+
+                    if (age < 0) {
+                        age = 0
+                    }
+
+                    e.elder_id.date_birth = age.toString()
+                })
                 return resolve(findProposal)
             } catch (error) {
                 reject({ message: 'Ocorreu um erro! Tente novamente mais tarde.', code: 400 });      
